@@ -50,5 +50,8 @@ for i in range(X.shape[1]) :
 
 Y = np.matmul(A,X)      
 
-#expectation of Y 
+EY = np.mean(Y,axis = 1)
 
+X_0 = np.zeros(13) 
+
+X_star = X_0 + np.matmul(np.matmul(A.T,np.linalg.inv(np.matmul(A,A.T))),(EY - np.matmul(A,X_0)))
