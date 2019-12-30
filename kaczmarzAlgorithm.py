@@ -44,7 +44,8 @@ A[5,12]=1;
 
 #let X(j) be a random variable that defines the delay faced by packet parsing through 'j'th path
 # creating X
-X = np.zeros(13 * 300).reshape(13,300);
+noOfObservation = 300
+X = np.zeros(13 * noOfObservation).reshape(13,noOfObservation);
 # creating array of X using exponential random variable
 for i in range(X.shape[1]) :
     X[:,i] = [ np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3),np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3)]  
@@ -66,8 +67,12 @@ elements = range(6) # Range of RV
 prob = [ i.sum() for i in A ] / A.sum() # probability of chosing a path w.r.t the euclidean norm of rows in A
 
 # Number of iterations we expect required to converge to a solution
-NoofIteration = 500
+noOfIteration = 500
 # Setting the Random VAriable Z to calculate \sY(Z_k)
-Z = np.random.choice(elements,NoofIteration,p = prob)
+Z = np.random.choice(elements,noOfIteration,p = prob)
 
 # step size Yeta = (1/k)
+
+for k in range(noOfIteration):
+    print(k)
+    Y_kplus1 = np.dot(A[Z[k+1]],X[k % noOfObservation]
