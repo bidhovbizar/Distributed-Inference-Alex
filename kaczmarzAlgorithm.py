@@ -44,11 +44,11 @@ A[5,12]=1;
 
 #let X(j) be a random variable that defines the delay faced by packet parsing through 'j'th path
 # creating X
-noOfObservation = 300
+noOfObservation = 160000
 X = np.zeros(13 * noOfObservation).reshape(13,noOfObservation);
 # creating array of X using exponential random variable
 for i in range(X.shape[1]) :
-    X[:,i] = [ np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3),np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3)]  
+    X[:,i] = [ np.random.exponential(1), np.random.exponential(1), np.random.exponential(1),np.random.exponential(1), np.random.exponential(1), np.random.exponential(1), np.random.exponential(1), np.random.exponential(1), np.random.exponential(1), np.random.exponential(1), np.random.exponential(1), np.random.exponential(1), np.random.exponential(1)]  
 
 #calculating Y  from X using equation Y = AX
 Y = np.matmul(A,X)      
@@ -57,7 +57,7 @@ Y = np.matmul(A,X)
 ExpY = np.mean(Y,axis=1)
 
 #Setting the initial value of X0 for deterministic Kaczmarz
-X0 = np.zeros(13) 
+X0 = [0,0,12.15,0,25.34,0,0,0,0,0,28.86,39.90,0]
 
 #Finding the X_star for Determinitstic Kaczmarz
 X_star = X0 + np.matmul(np.matmul(A.T,np.linalg.inv(np.matmul(A,A.T))),(ExpY - np.matmul(A,X0)))
@@ -67,12 +67,16 @@ elements = range(6) # Range of RV
 prob = [ i.sum() for i in A ] / A.sum() # probability of chosing a path w.r.t the euclidean norm of rows in A
 
 # Number of iterations we expect required to converge to a solution
-noOfIteration = 500
+noOfIteration = 500000
 # Setting the Random VAriable Z to calculate \sY(Z_k)
 Z = np.random.choice(elements,noOfIteration,p = prob)
 
 # step size Yeta = (1/k)
-
+X_prime = 0
+X_stoc = X0
 for k in range(noOfIteration):
-    print(k)
-    Y_kplus1 = np.dot(A[Z[k+1]],X[k % noOfObservation]
+    sY_kplus1 = np.dot(A[Z[k]],X[:,k % noOfObservation])
+    X_prime = X_prime + ((1/(k+1)) * (sY_kplus1 - np.matmul(A[Z[k]],X_stoc)) * prob[Z[k]])
+    X_stoc[Z[k]] = X_prime
+    
+print(X_star - X_stoc)
