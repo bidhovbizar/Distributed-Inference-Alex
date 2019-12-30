@@ -43,15 +43,31 @@ A[5,12]=1;
 # defining random variables for Y=AX+W 
 
 #let X(j) be a random variable that defines the delay faced by packet parsing through 'j'th path
+# creating X
 X = np.zeros(13 * 300).reshape(13,300);
-
+# creating array of X using exponential random variable
 for i in range(X.shape[1]) :
     X[:,i] = [ np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3),np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3)]  
 
+#calculating Y  from X using equation Y = AX
 Y = np.matmul(A,X)      
 
-EY = np.mean(Y,axis = 1)
+#Finding expectation of Y as ExpY
+ExpY = np.mean(Y,axis=1)
 
-X_0 = np.zeros(13) 
+#Setting the initial value of X0 for deterministic Kaczmarz
+X0 = np.zeros(13) 
 
-X_star = X_0 + np.matmul(np.matmul(A.T,np.linalg.inv(np.matmul(A,A.T))),(EY - np.matmul(A,X_0)))
+#Finding the X_star for Determinitstic Kaczmarz
+X_star = X0 + np.matmul(np.matmul(A.T,np.linalg.inv(np.matmul(A,A.T))),(ExpY - np.matmul(A,X0)))
+
+#Defining other variables for stochastic Kaczmarz
+elements = range(6) # Range of RV
+prob = [ i.sum() for i in A ] / A.sum() # probability of chosing a path w.r.t the euclidean norm of rows in A
+
+# Number of iterations we expect required to converge to a solution
+NoofIteration = 500
+# Setting the Random VAriable Z to calculate \sY(Z_k)
+Z = np.random.choice(elements,NoofIteration,p = prob)
+
+# step size Yeta = (1/k)
