@@ -39,19 +39,16 @@ A[2,11]=1;
 A[2,12]=1;
 A[5,12]=1;
 
+
 # defining random variables for Y=AX+W 
 
 #let X(j) be a random variable that defines the delay faced by packet parsing through 'j'th path
-X = np.zeros(13 * 300).reshape(300,13);
-for i in range(5) :
-    {
-        print(i)
-        X[i] = np.ones(13);
-    }
-RV_X = np.random.exponential(1/3) 
+X = np.zeros(13 * 300).reshape(13,300);
 
-for i in range(5) :
-    {
-        print(X[i])
-        #print(np.ones(13))
-    }
+for i in range(X.shape[1]) :
+    X[:,i] = [ np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3),np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3), np.random.exponential(1/3)]  
+
+Y = np.matmul(A,X)      
+
+#expectation of Y 
+
